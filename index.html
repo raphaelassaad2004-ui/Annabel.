@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine?</title>
+<style>
+body { margin:0; padding:0; background: rgb(255,182,193); overflow:hidden; font-family:Arial,sans-serif; text-align:center; transition: background 0.5s ease;}
+h1 {margin-top:15vh; font-size:3rem; color:white;}
+.message {font-size:1.5rem; color:white; margin-top:20px;}
+.buttons {margin-top:40px;}
+button {font-size:1.5rem; padding:15px 40px; border:none; border-radius:50px; cursor:pointer; transition:0.3s ease;}
+#yesBtn {background-color:#ff4d6d; color:white; margin-right:20px; box-shadow:0 0 15px rgba(255,77,109,0.8); animation:glow 1.5s infinite alternate;}
+@keyframes glow {from {box-shadow:0 0 10px rgba(255,77,109,0.6);} to {box-shadow:0 0 30px rgba(255,77,109,1);}}
+#noBtn {background-color:white; color:#ff4d6d;}
+.emoji {position:absolute; font-size:28px; animation:fall linear forwards;}
+@keyframes fall {from {transform:translateY(-10vh);} to {transform:translateY(110vh);}}
+@keyframes shake {0% {transform:translate(0px,0px);} 25%{transform:translate(5px,-5px);} 50%{transform:translate(-5px,5px);} 75%{transform:translate(5px,5px);} 100%{transform:translate(0px,0px);} }
+.shake {animation:shake 0.4s;}
+</style>
+</head>
+<body>
+<h1>Wanna be my Valentine?</h1>
+<div class="message" id="message"></div>
+<div class="buttons">
+<button id="yesBtn">Yes</button>
+<button id="noBtn">No</button>
+</div>
+<script>
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const message=document.getElementById("message");
+let yesScale=1,noScale=1,clickCount=0;
+const noMessages=["Are you sure?","Are you sure sure sure??","Rethink about it babeerr"];
+function shakeScreen(){document.body.classList.add("shake"); setTimeout(()=>{document.body.classList.remove("shake");},400);}
+function emojiRain(emoji){for(let i=0;i<25;i++){const drop=document.createElement("div"); drop.classList.add("emoji"); drop.innerHTML=emoji; drop.style.left=Math.random()*100+"vw"; drop.style.animationDuration=(Math.random()*2+2)+"s"; document.body.appendChild(drop); setTimeout(()=>drop.remove(),4000);}}
+function playHorrorSound(){const audioCtx=new (window.AudioContext||window.webkitAudioContext)(); const oscillator=audioCtx.createOscillator(); const gainNode=audioCtx.createGain(); oscillator.type="sawtooth"; oscillator.frequency.setValueAtTime(120,audioCtx.currentTime); oscillator.frequency.exponentialRampToValueAtTime(40,audioCtx.currentTime+1); gainNode.gain.setValueAtTime(0.5,audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+1); oscillator.connect(gainNode); gainNode.connect(audioCtx.destination); oscillator.start(); oscillator.stop(audioCtx.currentTime+1);}
+noBtn.addEventListener("click",()=>{
+shakeScreen();
+if(clickCount<noMessages.length) message.textContent=noMessages[clickCount];
+if(clickCount===0) emojiRain("😭");
+else if(clickCount===1) emojiRain("😡");
+else if(clickCount===2){emojiRain("🔪"); document.body.style.background="black"; playHorrorSound();}
+clickCount++; noScale-=0.15; yesScale+=0.15;
+if(noScale<=0){noBtn.style.display="none"; yesBtn.style.width="300px"; yesBtn.style.fontSize="2rem";}
+else{noBtn.style.transform=`scale(${noScale})`; yesBtn.style.transform=`scale(${yesScale})`;}
+});
+yesBtn.addEventListener("click",()=>{document.body.innerHTML=`<h1 style="margin-top:30vh;font-size:3rem;color:white;">YIPPIEEE I LOVE YOUUUU :33 ❤️</h1>`;});
+// Floating hearts
+function createHeart(){const heart=document.createElement("div"); heart.classList.add("heart"); const colors=["white","orange","red"]; heart.style.color=colors[Math.floor(Math.random()*colors.length)]; heart.style.left=Math.random()*100+"vw"; heart.style.animationDuration=(Math.random()*3+3)+"s"; heart.innerHTML="❤"; document.body.appendChild(heart); setTimeout(()=>heart.remove(),6000);}
+setInterval(createHeart,300);
+</script>
+</body>
+</html>
